@@ -1,0 +1,30 @@
+{
+  "name": "scaffold",
+  "description": "Generate a project or files from scaffolds.",
+  "version": "0.0.2",
+  "homepage": "https://github.com/jonschlinkert/scaffold",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/scaffold",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/scaffold/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "export-files": "^2.0.1",
+    "extend-shallow": "^2.0.1",
+    "look-up": "^0.7.1",
+    "template": "jonschlinkert/template#0.17.0-prep"
+  },
+  "devDependencies": {},
+  "keywords": []
+}
