@@ -7,18 +7,18 @@
 
 'use strict';
 
-var util = require('util');
-var forIn = require('for-in');
-var define = require('define-property');
-var toPath = require('to-object-path');
-var delegate = require('delegate-properties');
-var Task = require('expand-task');
 var Base = require('base-methods');
-var utils = require('./lib/utils');
+var toPath = require('to-object-path');
+var Target = require('expand-target');
+var merge = require('mixin-deep');
 
 /**
- * Create an instance of `Scaffold` with the given `options`.
+ * Create an instance of Scaffold with the
+ * given `options`
  *
+ * ```js
+ * var scaffold = new Scaffold();
+ * ```
  * @param {Object} `options`
  * @api public
  */
@@ -28,73 +28,77 @@ function Scaffold(options) {
     return new Scaffold(options);
   }
   Base.call(this);
-  this.config = {};
+  this.options = options || {};
+  this.targets = {};
 }
 Base.extend(Scaffold);
 
 /**
- * Prototype methods
+ * Register a scaffold "target" with the given `name`. A
+ * target is a semantically-grouped configuration of
+ * files and directories.
+ *
+ * ```js
+ * scaffold.register('webapp', ...);
+ * ```
+ *
+ * @param  {String} `name` The name of the config target.
+ * @param  {Object} `config`
+ * @return {Object}
+ * @api public
  */
 
-delegate(Scaffold.prototype, {
-  constructor: Scaffold,
-
-  /**
-   * Register a scaffold with the given `name` and optional `config`
-   * object.
-   *
-   * ```js
-   * scaffold.register('webapp', ...);
-   * ```
-   *
-   * @param  {String} `name`
-   * @param  {Object} `config`
-   * @return {Object}
-   * @api public
-   */
-
-  register: function (name, scaffold) {
-    var config = this.expand(name, scaffold);
-
-    forIn(config.targets, function (val, key) {
-      this.config[key] = val;
-    }, this);
-
-    return this;
-  },
-
-  expand: function (key, scaffold) {
-    if (typeof key === 'object') {
-      return new Task(this.setDefaults(key));
-    }
-    var config = {};
-    config[key] = this.setDefaults(scaffold);
-    return this.expand(config);
-  },
-
-  generate: function (name, data) {
-    generate(name, data);
-    return this;
-  },
-
-  setDefaults: function (scaffold) {
-    scaffold.options = merge({expand: true}, scaffold.options);
-    return scaffold;
-  },
-
-  option: function (key, value) {
-    this.set(toPath('options', key), value);
-    return this;
-  },
-
-  setItem: function (key, value) {
-    this.set(toPath('config', key), value);
-    return this;
-  }
-});
+Scaffold.prototype.register = function(name, config, options) {
+  this.targets[name] = new Target(name, this.defaults(config, options));
+  return this;
+};
 
 /**
- * Expose `Scaffold`.
+ * Set or get an option to be used as a default value
+ * when registering scaffold targets. Pass a key-value
+ * pair or an object to set a value, or the key of
+ * the value to get.
+ *
+ * ```js
+ * scaffold.option('cwd', 'templates/');
+ * ``
+ * @param {String|Object|Array} `key`
+ * @param {any} `value`
+ * @return {Object} Returns the instance of `Scaffold` for chaining
+ * @api public
+ */
+
+Scaffold.prototype.option = function(key, value) {
+  if (typeof key === 'string') {
+    key = toPath('options', key);
+    if (arguments.length === 1) {
+      return this.get(key, value);
+    }
+  } else {
+    this.visit('option', key);
+    return this;
+  }
+  this.set(key, value);
+  return this;
+};
+
+/**
+ * Set default values on targets.
+ */
+
+Scaffold.prototype.init = function(config, options) {
+  if (typeof config === 'string' || Array.isArray(config)) {
+    config = { src: config };
+  }
+  if (typeof options === 'object') {
+    config.options = options;
+  }
+  config.options = merge({expand: true}, this.options, config.options);
+  return config;
+};
+
+/**
+ * Expose `Scaffold`
  */
 
 module.exports = Scaffold;
