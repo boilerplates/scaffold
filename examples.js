@@ -1,3 +1,4 @@
+var path = require('path');
 var stringify = require('./test/support/');
 var Scaffold = require('./');
 
@@ -6,7 +7,7 @@ var Scaffold = require('./');
  * UI component
  */
 
-var component = new Scaffold('component', {
+var npm = new Scaffold('component', {
   cwd: '@/scaffolds-example/scaffolds',
   files: [
     {src: 'templates/*.hbs', dest: 'src/'},
@@ -14,7 +15,7 @@ var component = new Scaffold('component', {
     {src: 'styles/*.css', dest: 'src/'},
   ]
 });
-console.log(stringify(component));
+console.log(stringify(npm));
 
 
 /**
@@ -25,7 +26,7 @@ var post = new Scaffold('post', {
   cwd: 'test/scaffolds',
   files: [
     {src: 'content/post.md', dest: 'src/posts/'},
-    {src: 'scripts/ipsum.json', dest: 'src/data/'},
+    {src: 'scripts/ipsum.json', dest: 'src/data/'}
   ]
 });
 console.log(stringify(post));
@@ -42,3 +43,37 @@ var dotfiles = new Scaffold('dotfiles', '.*', {
 });
 console.log(stringify(dotfiles));
 
+
+var foo = new Scaffold('foo', {
+  // `~` tilde expands to the user's home directory
+  options: {cwd: '~/scaffolds'},
+  src: ['**/component*'],
+  dest: 'local/src/'
+});
+console.log(stringify(foo))
+
+
+var bar = new Scaffold('foo', {
+  // `~` tilde expands to the user's home directory
+  options: {cwd: '~', srcBase: 'scaffolds'},
+  src: ['*/component.*'],
+  dest: 'local/src/'
+});
+console.log(stringify(bar));
+
+
+// function component(name) {
+//   return new Scaffold(name, {
+//     files: {src: ['*.js'], dest: 'src'},
+//     rename: function(dest, src, opts) {
+//       return path.join(dest, name, 'index') + path.extname(src);
+//     }
+//   });
+// }
+
+// component('foo')
+// //=> 'src/foo/index.js'
+// component('bar')
+// //=> 'src/bar/index.js'
+// component('baz')
+// //=> 'src/baz/index.js'
