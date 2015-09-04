@@ -1,7 +1,7 @@
 {
   "name": "scaffold",
-  "description": "Generate a project or files from scaffolds.",
-  "version": "0.0.2",
+  "description": "Conventions and API for creating scaffolds that can by used by any build system or generator.",
+  "version": "0.1.1",
   "homepage": "https://github.com/jonschlinkert/scaffold",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/scaffold",
@@ -20,11 +20,29 @@
     "test": "mocha"
   },
   "dependencies": {
-    "export-files": "^2.0.1",
-    "extend-shallow": "^2.0.1",
-    "look-up": "^0.7.1",
-    "template": "jonschlinkert/template#0.17.0-prep"
+    "expand-target": "^0.2.3",
+    "mixin-deep": "^1.1.3"
   },
-  "devDependencies": {},
-  "keywords": []
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-jshint": "^1.11.2",
+    "gulp-mocha": "^2.1.3",
+    "jshint-stylish": "^2.0.1",
+    "mocha": "*",
+    "repeat-string": "^1.5.2",
+    "should": "*",
+    "stringify-object": "jonschlinkert/stringify-object"
+  },
+  "keywords": [],
+  "verb": {
+    "related": {
+      "list": [
+        "boilerplate",
+        "assemble",
+        "template",
+        "scaffold"
+      ]
+    }
+  }
 }
