@@ -63,5 +63,16 @@ describe('scaffold', function () {
       var scaffold = new Scaffold('header', '[a-c].txt', {cwd: 'test/templates'});
       assert(scaffold.files.length > 0);
     });
+
+  });
+  describe('options.process:', function () {
+    it('should process config templates:', function () {
+      var scaffold = new Scaffold('header', '<%= foo %>', {
+        process: true,
+        foo: 'bar'
+      });
+
+      assert(scaffold.files[0].dest === 'bar');
+    });
   });
 });
