@@ -18,23 +18,21 @@ var merge = require('mixin-deep');
  *   src: ['~/templates/*.js']
  * });
  * ```
- * @param {Object} `name`
+ * @param {String} `name` The name of the scaffold.
+ * @param {Object} `config` The scaffold's configuration object.
  * @api public
  */
 
-function Scaffold(name, config, options) {
+function Scaffold(config, options) {
   if (!(this instanceof Scaffold)) {
-    return new Scaffold(name, config, options);
-  }
-  if (typeof name !== 'string') {
-    throw new TypeError('expected name to be a string.');
+    return new Scaffold(config, options);
   }
 
-  config = this.create(config, options);
+  config = this.init(config, options);
 
-  var scaffold = new Target(name, config);
+  var scaffold = new Target('scaffold', config);
   for (var key in scaffold) {
-    if (scaffold.hasOwnProperty(key)) {
+    if (scaffold.hasOwnProperty(key) && key !== 'name') {
       this[key] = scaffold[key];
     }
   }
@@ -44,7 +42,7 @@ function Scaffold(name, config, options) {
  * Set default values on targets.
  */
 
-Scaffold.prototype.create = function(config, options) {
+Scaffold.prototype.init = function(config, options) {
   if (typeof config === 'undefined') {
     throw new TypeError('expected config to be an object.');
   }
@@ -57,8 +55,6 @@ Scaffold.prototype.create = function(config, options) {
   if (!hasAny(config, ['src', 'dest', 'files'])) {
     throw new Error('scaffolds should have a src, dest or files property.');
   }
-
-  config.options = merge({expand: true}, config.options);
   return config;
 };
 
