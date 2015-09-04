@@ -1,6 +1,6 @@
 
 
-var Scaffold = require('template');
+var Scaffold = require('../../');
 var scaffold = new Scaffold();
 
 
