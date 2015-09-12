@@ -1,7 +1,7 @@
 {
   "name": "scaffold",
   "description": "Conventions and API for creating scaffolds that can by used by any build system or generator.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/jonschlinkert/scaffold",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/scaffold",
@@ -34,7 +34,33 @@
     "should": "*",
     "stringify-object": "jonschlinkert/stringify-object"
   },
-  "keywords": [],
+  "keywords": [
+    "app",
+    "boilerplate",
+    "boilerplates",
+    "bootstrap",
+    "build",
+    "cli",
+    "dev",
+    "development",
+    "framework",
+    "generate",
+    "generator",
+    "grunt",
+    "gulpfriendly",
+    "plugin",
+    "project",
+    "scaffold",
+    "scaffolding",
+    "skeleton",
+    "start",
+    "starter",
+    "system",
+    "template",
+    "tool",
+    "toolkit",
+    "yeoman"
+  ],
   "verb": {
     "related": {
       "list": [
