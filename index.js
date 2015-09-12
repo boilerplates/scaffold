@@ -29,6 +29,7 @@ function Scaffold(config, options) {
   }
 
   config = this.init(config, options);
+  this.isScaffold = true;
 
   var scaffold = new Target('scaffold', config);
   for (var key in scaffold) {
