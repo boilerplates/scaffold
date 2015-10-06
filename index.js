@@ -7,8 +7,11 @@
 
 'use strict';
 
+var define = require('define-property');
 var Target = require('expand-target');
+var files = require('expand-files');
 var merge = require('mixin-deep');
+var util = require('util');
 
 /**
  * Create a new Scaffold with the given `name` and `config`.
@@ -23,41 +26,29 @@ var merge = require('mixin-deep');
  * @api public
  */
 
-function Scaffold(config, options) {
+function Scaffold(name, config) {
   if (!(this instanceof Scaffold)) {
-    return new Scaffold(config, options);
+    return new Scaffold(name, config);
   }
 
-  config = this.init(config, options);
-  this.isScaffold = true;
-
-  var scaffold = new Target('scaffold', config);
-  for (var key in scaffold) {
-    if (scaffold.hasOwnProperty(key) && key !== 'name') {
-      this[key] = scaffold[key];
-    }
+  if (typeof name !== 'string') {
+    config = name;
+    name = 'scaffold';
   }
-}
-
-/**
- * Set default values on targets.
- */
-
-Scaffold.prototype.init = function(config, options) {
   if (typeof config === 'undefined') {
     throw new TypeError('expected config to be an object.');
   }
   if (typeof config === 'string' || Array.isArray(config)) {
     config = { src: config };
   }
-  if (typeof options === 'object') {
-    config.options = merge({}, options, config.options);
-  }
   if (!hasAny(config, ['src', 'dest', 'files'])) {
     throw new Error('scaffolds should have a src, dest or files property.');
   }
-  return config;
-};
+  Target.call(this, name, config);
+  define(this, 'isScaffold', true);
+}
+
+util.inherits(Scaffold, Target);
 
 /**
  * Return `true` if an object has any of the given keys.

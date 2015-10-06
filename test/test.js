@@ -1,6 +1,3 @@
-'use strict';
-
-/* deps: mocha */
 var assert = require('assert');
 var should = require('should');
 var Scaffold = require('../');
@@ -43,8 +40,14 @@ describe('scaffold', function () {
       assert(scaffold.files.length > 0);
     });
 
-    it('should support passing `src` as a string:', function () {
-      var scaffold = new Scaffold('test/templates/[a-c].txt');
+    it('should support passing a `name` as the first arg:', function () {
+      var scaffold = new Scaffold('foo', {src: 'test/templates/[a-c].txt'});
+      assert(scaffold.name === 'foo');
+      assert(scaffold.files.length > 0);
+    });
+
+    it('should work without a `name`:', function () {
+      var scaffold = new Scaffold({src: 'test/templates/[a-c].txt'});
       assert(scaffold.files.length > 0);
     });
 
@@ -54,14 +57,22 @@ describe('scaffold', function () {
     });
 
     it('should support passing options as the third argument:', function () {
-      var scaffold = new Scaffold('[a-c].txt', {cwd: 'test/templates'});
+      var scaffold = new Scaffold('foo', {src: '[a-c].txt'}, {cwd: 'test/templates'});
       assert(scaffold.files.length > 0);
     });
 
+    // it('should add a files object:', function () {
+    //   var scaffold = new Scaffold('foo', {src: '[a-c].txt'}, {cwd: 'test/templates'});
+    //   assert(scaffold.files.length === 1);
+    //   scaffold.addFiles({src: ['*.js'], dest: 'actual'});
+    //   console.log(scaffold)
+    //   assert(scaffold.files.length === 1);
+    // });
   });
+
   describe('options.process:', function () {
     it('should process config templates:', function () {
-      var scaffold = new Scaffold('<%= foo %>', {
+      var scaffold = new Scaffold('foo', {src: '<%= foo %>'}, {
         process: true,
         foo: 'bar'
       });
