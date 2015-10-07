@@ -10,9 +10,14 @@
   },
   "license": "MIT",
   "files": [
+    "bin/",
+    "lib/",
     "index.js"
   ],
   "main": "index.js",
+  "bin": {
+    "scaffold": "./bin/cli.js"
+  },
   "engines": {
     "node": ">=0.10.0"
   },
