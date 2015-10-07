@@ -7,66 +7,30 @@
 
 'use strict';
 
-var define = require('define-property');
-var Target = require('expand-target');
-var files = require('expand-files');
-var merge = require('mixin-deep');
-var util = require('util');
+var Base = require('base-methods').namespace('cache');
+var option = require('base-options');
 
-/**
- * Create a new Scaffold with the given `name` and `config`.
- *
- * ```js
- * var component = new Scaffold('component', {
- *   src: ['~/templates/*.js']
- * });
- * ```
- * @param {String} `name` The name of the scaffold.
- * @param {Object} `config` The scaffold's configuration object.
- * @api public
- */
+var plugin = require('./lib/plugins/base-plugin');
+var Scaffolds = require('./lib/scaffolds');
+var Scaffold = require('./lib/scaffold');
+var plugins = require('./lib/plugins');
 
-function Scaffold(name, config) {
-  if (!(this instanceof Scaffold)) {
-    return new Scaffold(name, config);
+function App (options) {
+  if (!(this instanceof App)) {
+    return new App(options);
   }
-
-  if (typeof name !== 'string') {
-    config = name;
-    name = 'scaffold';
-  }
-  if (typeof config === 'undefined') {
-    throw new TypeError('expected config to be an object.');
-  }
-  if (typeof config === 'string' || Array.isArray(config)) {
-    config = { src: config };
-  }
-  if (!hasAny(config, ['src', 'dest', 'files'])) {
-    throw new Error('scaffolds should have a src, dest or files property.');
-  }
-  Target.call(this, name, config);
-  define(this, 'isScaffold', true);
+  Base.call(this);
+  this.options = options || {};
+  this.use(option);
+  this.use(plugin);
+  this.use(plugins);
+  this.define('Scaffold', Scaffold);
+  this.define('Scaffolds', Scaffolds);
 }
 
-util.inherits(Scaffold, Target);
+Base.extend(App);
 
-/**
- * Return `true` if an object has any of the given keys.
- *
- * @param {Object} `obj`
- * @param {Array} `keys`
- * @return {Boolean}
- */
+App.Scaffold = Scaffold;
+App.Scaffolds = Scaffolds;
 
-function hasAny(obj, keys) {
-  for (var key in obj) {
-    if (keys.indexOf(key) > -1) return true;
-  }
-  return false;
-}
-
-/**
- * Expose `Scaffold`
- */
-
-module.exports = Scaffold;
+module.exports = App;

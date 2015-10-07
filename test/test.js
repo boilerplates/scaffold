@@ -1,6 +1,6 @@
 var assert = require('assert');
 var should = require('should');
-var Scaffold = require('../');
+var Scaffold = require('../').Scaffold;
 var scaffold;
 
 describe('scaffold', function () {
