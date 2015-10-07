@@ -70,7 +70,7 @@ describe('scaffold', function () {
     // });
   });
 
-  describe('options.process:', function () {
+  describe.skip('options.process:', function () {
     it('should process config templates:', function () {
       var scaffold = new Scaffold('foo', {src: '<%= foo %>'}, {
         process: true,
