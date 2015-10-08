@@ -76,18 +76,21 @@ gulp.task('clear:cache', function (done) {
 
 gulp.task('specs', function (done) {
   var app = new App();
-  var metadata = app.get('jonschlinkert/base-methods#manifest');
-  if (!metadata) return done();
+  app.install('jonschlinkert/base-methods#manifest', function (err) {
+    if (err) return done(err);
+    var metadata = app.get('jonschlinkert/base-methods#manifest');
+    if (!metadata) return done();
 
-  var specs = metadata.target('specs');
-  if (!specs) return done();
+    var specs = metadata.target('specs');
+    if (!specs) return done();
 
-  async.each(specs.files, function (file, next) {
-    gulp.src(file.src, {cwd: metadata.options.cwd})
-      .pipe(gulp.dest(file.dest))
-      .on('error', next)
-      .on('end', next);
-  }, done);
+    async.each(specs.files, function (file, next) {
+      gulp.src(file.src, {cwd: metadata.options.cwd})
+        .pipe(gulp.dest(file.dest))
+        .on('error', next)
+        .on('end', next);
+    }, done);
+  });
 });
 
 var lint = ['index.js', 'lib/**/*.js'];
