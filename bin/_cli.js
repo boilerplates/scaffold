@@ -6,8 +6,11 @@ var minimist = require('minimist');
 var args = minimist(process.argv.slice(2));
 
 var MapConfig = require('map-config');
-var utils = require('../lib/utils');
 var commands = require('./commands');
+var utils = require('../lib/utils');
+var App = require('../');
+var app = new App();
+
 
 var config = {};
 if (args._ && args._.length === 0) {
@@ -28,5 +31,5 @@ commands.on('end', function (cmd) {
   process.exit(0);
 });
 
-var mapper = new MapConfig(commands);
+var mapper = new MapConfig(commands, app);
 mapper.process(config);
