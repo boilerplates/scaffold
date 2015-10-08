@@ -1,32 +1,27 @@
 #!/usr/bin/env node
 
-'use strict';
+/**
+ * Ensure the cli is executed with node generators for
+ * versions of node < 4.0.0.
+ *
+ * Inspired by duo.js
+ * https://github.com/duojs/duo/blob/master/bin/duo
+ */
 
-var minimist = require('minimist');
-var args = minimist(process.argv.slice(2));
+var spawn = require('spawn-commands');
+var path = require('path');
+var args = process.argv.slice(2);
 
-var MapConfig = require('map-config');
-var utils = require('../lib/utils');
-var commands = require('./commands');
+args.unshift(path.resolve(__dirname, '_cli.js'));
 
-var config = {};
-if (args._ && args._.length === 0) {
-  config.help = utils.omit(args, '_');
-} else {
-  var cmd = args._.shift();
-  config[cmd] = utils.omit(args, '_');
-  config[cmd].args = args._;
+if (!require('has-generators')) {
+  args.unshift('--harmony-generators');
 }
 
-commands.on('error', function (err) {
-  console.log(utils.red('Error:'), err.message);
-  process.exit(1);
-});
-
-commands.on('end', function (cmd) {
-  console.log(cmd, utils.gray('finished'));
+spawn({cmd: process.execPath, args: args}, function (err) {
+  if (err) {
+    console.error(err);
+    process.exit(1);
+  }
   process.exit(0);
 });
-
-var mapper = new MapConfig(commands);
-mapper.process(config);
