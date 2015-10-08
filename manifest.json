@@ -11,7 +11,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "project": "doowb/scaffold-project"
+    "scaffold-gulpfile": "doowb/scaffold-gulpfile",
+    "scaffold-assemblefile": "doowb/scaffold-assemblefile",
+    "scaffold-project": "doowb/scaffold-project"
   },
   "targets": {},
   "config": {},
