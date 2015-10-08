@@ -27,7 +27,9 @@ commands.on('error', function (err) {
 });
 
 commands.on('end', function (cmd) {
-  console.log(cmd, utils.gray('finished'));
+  if (cmd) {
+    console.log(cmd, utils.gray('finished'));
+  }
   process.exit(0);
 });
 
