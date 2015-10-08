@@ -8,10 +8,10 @@ var utils = require('../lib/utils');
 var App = require('../');
 var app = new App();
 
-function save (done) {
+function save (cb) {
   return function (err) {
-    if (err) return done(err);
-    writeFile('manifest.json', JSON.stringify(app.scaffolds, null, 2), done);
+    if (err) return cb(err);
+    writeFile('manifest.json', JSON.stringify(app.scaffolds, null, 2), cb);
   };
 }
 
