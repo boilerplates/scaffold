@@ -1,13 +1,14 @@
 var gulp = require('gulp');
+var File = require('vinyl');
+var async = require('async');
+var writeFile = require('write');
+var mocha = require('gulp-mocha');
+var through = require('through2');
+var minimist = require('minimist');
+var jshint = require('gulp-jshint');
 var istanbul = require('gulp-istanbul');
 var stylish = require('jshint-stylish');
-var jshint = require('gulp-jshint');
-var mocha = require('gulp-mocha');
-var writeFile = require('write');
-var minimist = require('minimist');
 
-var through = require('through2');
-var File = require('vinyl');
 var App = require('./');
 var Scaffold = App.Scaffold;
 
@@ -71,6 +72,22 @@ gulp.task('clear:cache', function (done) {
   var app = new App();
   app.store.del({force: true});
   process.nextTick(done);
+});
+
+gulp.task('specs', function (done) {
+  var app = new App();
+  var metadata = app.get('jonschlinkert/base-methods#manifest');
+  if (!metadata) return done();
+
+  var specs = metadata.target('specs');
+  if (!specs) return done();
+
+  async.each(specs.files, function (file, next) {
+    gulp.src(file.src, {cwd: metadata.options.cwd})
+      .pipe(gulp.dest(file.dest))
+      .on('error', next)
+      .on('end', next);
+  }, done);
 });
 
 var lint = ['index.js', 'lib/**/*.js'];
