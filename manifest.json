@@ -13,7 +13,34 @@
   "dependencies": {
     "scaffold-project": "doowb/scaffold-project"
   },
-  "targets": {},
+  "targets": {
+    "spec": {
+      "files": [
+        {
+          "src": [
+            "test/fixtures/scaffolds/sf.js",
+            "test/fixtures/templates/sf.js",
+            "test/scaffold.js",
+            "test/scaffolds/scripts/button.js",
+            "test/support/index.js"
+          ],
+          "dest": "test/spec",
+          "options": {
+            "cwd": "",
+            "expand": false,
+            "flatten": false
+          },
+          "name": "scaffold"
+        }
+      ],
+      "options": {
+        "cwd": "",
+        "expand": false,
+        "flatten": false
+      },
+      "key": "spec"
+    }
+  },
   "config": {},
   "isMetadata": true
 }
