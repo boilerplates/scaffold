@@ -33,8 +33,12 @@ var commands = {
     load(app);
 
     if (config.args && config.args.length) {
+      var opts = {};
+      if (config.save === true) {
+        opts.save = true;
+      }
       return utils.async.each(config.args, function (dep, next) {
-        app.install(dep, next);
+        app.install(dep, opts, next);
       }, save(app, function (err) {
         if (err) return commands.emit('error', err);
         commands.emit('end', 'install');
