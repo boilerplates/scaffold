@@ -7,11 +7,11 @@ var sinon = require('sinon');
 var utils = require('../lib/utils');
 var App = require('../');
 
-describe('install plugin', function () {
-  it('should install specified dependency:', function (done) {
+describe('resolve plugin', function () {
+  it('should resolve specified dependency:', function (done) {
     var restore = capture(process.stdout);
     var app = new App();
-    app.install('doowb/scaffold-assemblefile', function (err, scaffolds) {
+    app.resolve('doowb/scaffold-assemblefile', function (err, scaffolds) {
       var output = restore(true);
       if (err) return done(err);
       assert.notEqual(output.indexOf('Downloading'), -1);
@@ -21,16 +21,13 @@ describe('install plugin', function () {
     });
   });
 
-  it('should install registered dependencies:', function (done) {
+  it('should resolve an object of dependencies:', function (done) {
     var app = new App();
-    app.init({
-      dependencies: {
+    var restore = capture(process.stdout);
+    app.resolve({
         'doowb/scaffold-assemblefile': 'doowb/scaffold-assemblefile',
         'doowb/scaffold-gulpfile': 'doowb/scaffold-gulpfile',
-      }
-    });
-    var restore = capture(process.stdout);
-    app.install(function (err, scaffolds) {
+      }, function (err, scaffolds) {
       var output = restore(true);
       if (err) return done(err);
       assert.notEqual(output.indexOf('Downloading'), -1);
@@ -41,23 +38,10 @@ describe('install plugin', function () {
     });
   });
 
-  it('should install specified dependency when options is null:', function (done) {
-    var app = new App();
-    var restore = capture(process.stdout);
-    app.install('doowb/scaffold-assemblefile', null, function (err, scaffolds) {
-      var output = restore(true);
-      if (err) return done(err);
-      assert.notEqual(output.indexOf('Downloading'), -1);
-      assert.notEqual(output.indexOf('doowb/scaffold-assemblefile'), -1);
-      assert.equal(output.indexOf('Warning'), -1);
-      done();
-    });
-  });
-
   it('should give a warning when dependency is not found:', function (done) {
     var app = new App();
     var restore = capture(process.stdout);
-    app.install('doowb/scaffolds-assemblefile', function (err, scaffolds) {
+    app.resolve('doowb/scaffolds-assemblefile', function (err, scaffolds) {
       var output = restore(true);
       if (err) return done(err);
       assert.notEqual(output.indexOf('Downloading'), -1);
@@ -68,16 +52,16 @@ describe('install plugin', function () {
     });
   });
 
-  it('should add dependency to manifest when `save:true` is specified on options:', function (done) {
+  it('should give a warning when given an invalid github repo is not found:', function (done) {
     var app = new App();
     var restore = capture(process.stdout);
-    app.install('doowb/scaffold-project', {save: true}, function (err, scaffolds) {
+    app.resolve('doowb', function (err, scaffolds) {
       var output = restore(true);
       if (err) return done(err);
-      assert.notEqual(output.indexOf('Downloading'), -1);
-      assert.notEqual(output.indexOf('doowb/scaffold-project'), -1);
-      assert.equal(output.indexOf('Warning'), -1);
-      assert.equal(output.indexOf('Not Found'), -1);
+      assert.equal(output.indexOf('Downloading'), -1);
+      assert.notEqual(output.indexOf('Warning'), -1);
+      assert.notEqual(output.indexOf('Invalid github repository'), -1);
+      assert.notEqual(output.indexOf('doowb'), -1);
       done();
     });
   });
@@ -96,11 +80,38 @@ describe('install plugin', function () {
     it('should get a fake error from resolve', function (done) {
       var app = new App();
       var restore = capture(process.stdout);
-      app.install('doowb/scaffold-project', function (err, scaffolds) {
+      app.resolve('doowb/scaffold-project', function (err, scaffolds) {
         var output = restore(true);
         if (err) {
           assert.equal(typeof err.notFound, 'undefined');
           assert.equal(err.message, 'Error: Fake Error');
+          return done();
+        }
+        done(new Error('Expected an error'));
+      });
+    });
+  });
+
+  describe('save error', function () {
+    var app;
+    before(function(){
+      app = new App();
+      sinon
+        .stub(app, 'save')
+        .yields(new Error('Fake Error'), null);
+    });
+
+    after(function(){
+      app.save.restore();
+    });
+
+    it('should get a fake error from save', function (done) {
+      var restore = capture(process.stdout);
+      app.resolve('doowb/scaffold-project', function (err, scaffolds) {
+        var output = restore(true);
+        if (err) {
+          assert.equal(typeof err.notFound, 'undefined');
+          assert.equal(err.message, 'Fake Error');
           return done();
         }
         done(new Error('Expected an error'));
