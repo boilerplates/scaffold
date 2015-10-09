@@ -51,6 +51,7 @@
   },
   "devDependencies": {
     "async": "^1.4.2",
+    "capture-stream": "^0.1.1",
     "gulp": "^3.9.0",
     "gulp-istanbul": "^0.10.0",
     "gulp-jshint": "^1.11.2",
@@ -60,6 +61,7 @@
     "mocha": "*",
     "repeat-string": "^1.5.2",
     "should": "*",
+    "sinon": "^1.17.1",
     "stream-loader": "jonschlinkert/stream-loader#plugins",
     "stringify-object": "jonschlinkert/stringify-object",
     "through2": "^2.0.0",
