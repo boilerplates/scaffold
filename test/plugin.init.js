@@ -57,5 +57,4 @@ describe('init plugin', function () {
     };
     assert.deepEqual(app.scaffolds.cache, expected);
   });
-
 });
