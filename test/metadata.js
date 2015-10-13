@@ -174,6 +174,17 @@ describe('metadata', function () {
       it('should use registered resolvers:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
+        metadata.resolve('doowb/handlebars-helpers', function (err, installer) {
+          if (err) return done(err);
+          assert(installer);
+          assert.equal(typeof installer, 'function');
+          done();
+        });
+      });
+
+      it('should use registered resolvers given a branch:', function (done) {
+        var metadata = new Metadata();
+        metadata.resolver('github', require('../lib/metadata/resolvers/github'));
         metadata.resolve('doowb/handlebars-helpers', 'docs', function (err, installer) {
           if (err) return done(err);
           assert(installer);

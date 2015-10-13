@@ -37,6 +37,8 @@
     "data-store": "^0.9.0",
     "expand-target": "^0.2.3",
     "fetch-files": "^0.1.0",
+    "gh-resolve": "^5.1.1",
+    "gnode": "^0.1.1",
     "has-generators": "^1.0.1",
     "lazy-cache": "^0.2.3",
     "load-pkg": "^1.3.0",
