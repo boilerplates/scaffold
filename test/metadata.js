@@ -171,65 +171,77 @@ describe('metadata', function () {
         assert.equal(typeof metadata.resolvers.github, 'function');
       });
 
-      it('should use registered resolvers:', function () {
+      it('should use registered resolvers:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
-        var installer = metadata.resolve('doowb/handlebars-helpers', 'docs');
-        assert(installer);
-        assert.equal(typeof installer, 'function');
+        metadata.resolve('doowb/handlebars-helpers', 'docs', function (err, installer) {
+          if (err) return done(err);
+          assert(installer);
+          assert.equal(typeof installer, 'function');
+          done();
+        });
       });
 
-      it('should not resolve invalid github url:', function () {
+      it('should not resolve invalid github url:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
-        var installer = metadata.resolve('doowb');
-        assert(installer == null);
+        metadata.resolve('doowb', function (err, installer) {
+          if (err) return done(err);
+          assert(installer == null);
+          done();
+        });
       });
 
       it('should download the default mainfest file from a github url:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
-        var installer = metadata.resolve('doowb/handlebars-helpers', 'docs');
-        installer('scaffolds.json', function (err, configs) {
-          assert.equal(configs.length, 1);
-          var config = configs[0];
-          assert.equal(typeof config.content, 'string');
-          var data = JSON.parse(config.content);
-          assert.equal(data.name, 'handlebars-helpers');
-          done();
+        metadata.resolve('doowb/handlebars-helpers', 'docs', function (err, installer) {
+          if (err) return done(err);
+          installer('scaffolds.json', function (err, configs) {
+            assert.equal(configs.length, 1);
+            var config = configs[0];
+            assert.equal(typeof config.content, 'string');
+            var data = JSON.parse(config.content);
+            assert.equal(data.name, 'handlebars-helpers');
+            done();
+          });
         });
       });
 
       it('should download a specified file from a github url:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
-        var installer = metadata.resolve('doowb/handlebars-helpers', 'docs');
-        installer('scaffolds.json', function (err, configs) {
-          assert.equal(configs.length, 1);
-          var config = configs[0];
-          assert.equal(typeof config.content, 'string');
-          var data = JSON.parse(config.content);
-          assert.equal(data.name, 'handlebars-helpers');
-          done();
+        metadata.resolve('doowb/handlebars-helpers', 'docs', function (err, installer) {
+          if (err) return done(err);
+          installer('scaffolds.json', function (err, configs) {
+            assert.equal(configs.length, 1);
+            var config = configs[0];
+            assert.equal(typeof config.content, 'string');
+            var data = JSON.parse(config.content);
+            assert.equal(data.name, 'handlebars-helpers');
+            done();
+          });
         });
       });
 
       it('should download a specified file from a github url to a specified dest:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
-        var installer = metadata.resolve('doowb/handlebars-helpers', 'docs');
-        installer('scaffolds.json', 'test/actual', function (err, configs) {
-          assert.equal(configs.length, 1);
-          var config = configs[0];
+        metadata.resolve('doowb/handlebars-helpers', 'docs', function (err, installer) {
+          if (err) return done(err);
+          installer('scaffolds.json', 'test/actual', function (err, configs) {
+            assert.equal(configs.length, 1);
+            var config = configs[0];
 
-          assert.equal(typeof config.content, 'undefined');
-          assert(fs.existsSync('test/actual/scaffolds.json'));
+            assert.equal(typeof config.content, 'undefined');
+            assert(fs.existsSync('test/actual/scaffolds.json'));
 
-          var content = fs.readFileSync('test/actual/scaffolds.json', 'utf8');
-          var data = JSON.parse(content);
+            var content = fs.readFileSync('test/actual/scaffolds.json', 'utf8');
+            var data = JSON.parse(content);
 
-          assert.equal(data.name, 'handlebars-helpers');
-          done();
+            assert.equal(data.name, 'handlebars-helpers');
+            done();
+          });
         });
       });
     });
