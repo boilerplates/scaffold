@@ -203,6 +203,16 @@ describe('metadata', function () {
         });
       });
 
+      it('should not resolve invalid github url with a branch:', function (done) {
+        var metadata = new Metadata();
+        metadata.resolver('github', require('../lib/metadata/resolvers/github'));
+        metadata.resolve('doowb', 'docs', function (err, installer) {
+          if (err) return done(err);
+          assert(installer == null);
+          done();
+        });
+      });
+
       it('should download the default mainfest file from a github url:', function (done) {
         var metadata = new Metadata();
         metadata.resolver('github', require('../lib/metadata/resolvers/github'));
