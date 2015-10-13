@@ -8,9 +8,9 @@
 'use strict';
 
 var Base = require('base-methods').namespace('cache');
+var plugin = require('base-plugins');
 var option = require('base-options');
 
-var plugin = require('./lib/plugins/base-plugin');
 var Scaffolds = require('./lib/scaffolds');
 var Scaffold = require('./lib/scaffold');
 var plugins = require('./lib/plugins');
