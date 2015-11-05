@@ -144,6 +144,7 @@ var component = new Scaffold('component', {
 Here is a quick reference comparing the difference between boilerplates, scaffolds and templates.
 
 | **type** | **description** |
+| --- | --- |
 | template | Resuable file, code or content which contains "placeholder" values that will eventually be replaced with real values by a rendering (template) engine |
 | [scaffold](#scaffold) | Consist of one or more templates or source files and serve as a "temporary support structure" that may be used at init, or throughout the duration of a project. |
 | [boilerplate](https://github.com/boilerplate) | Boilerplates consist of all of the necessary files required to initialize a complete project. |
