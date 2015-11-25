@@ -1,25 +1,27 @@
+'use strict';
+
 var gulp = require('gulp');
-var istanbul = require('gulp-istanbul');
-var stylish = require('jshint-stylish');
-var jshint = require('gulp-jshint');
 var mocha = require('gulp-mocha');
+var istanbul = require('gulp-istanbul');
+var eslint = require('gulp-eslint');
 
-gulp.task('jshint', function() {
-  return gulp.src('index.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter(stylish));
-});
+var coverage = ['index.js', 'lib/*.js'];
 
-gulp.task('test', ['jshint'], function (cb) {
-  gulp.src('index.js')
+gulp.task('coverage', function () {
+  return gulp.src(coverage)
     .pipe(istanbul())
-    .pipe(istanbul.hookRequire())
-    .on('finish', function () {
-      gulp.src(['test/test.js'])
-        .pipe(mocha())
-        .pipe(istanbul.writeReports())
-        .on('end', cb);
-    });
+    .pipe(istanbul.hookRequire());
 });
 
-gulp.task('default', ['test']);
+gulp.task('mocha', ['coverage'], function () {
+  return gulp.src('test/*.js')
+    .pipe(mocha({reporter: 'spec'}))
+    .pipe(istanbul.writeReports());
+});
+
+gulp.task('eslint', function () {
+  return gulp.src(coverage.concat('test/*.js'))
+    .pipe(eslint())
+});
+
+gulp.task('default', ['mocha', 'eslint']);
