@@ -26,7 +26,7 @@ function Scaffold(options) {
   use(this);
 
   this.options = options || {};
-  if (utils.isScaffold(options)) {
+  if (utils.isScaffold(options) || util.isTask(options)) {
     this.options = {};
     this.addTargets(options);
     return this;
