@@ -7,72 +7,92 @@
 
 'use strict';
 
-var Target = require('expand-target');
-var merge = require('mixin-deep');
+var utils = require('./utils');
+var util = require('expand-utils');
+var use = require('use');
 
 /**
- * Create a new Scaffold with the given `name` and `config`.
+ * Create a new Scaffold with the given `options`
  *
  * ```js
- * var component = new Scaffold('component', {
- *   src: ['~/templates/*.js']
- * });
+ * var scaffold = new Scaffold({cwd: 'src'});
  * ```
- * @param {String} `name` The name of the scaffold.
- * @param {Object} `config` The scaffold's configuration object.
+ * @param {Object} `options`
  * @api public
  */
 
-function Scaffold(config, options) {
-  if (!(this instanceof Scaffold)) {
-    return new Scaffold(config, options);
-  }
+function Scaffold(options) {
+  util.is(this, 'Scaffold');
+  use(this);
 
-  config = this.init(config, options);
-  this.isScaffold = true;
-
-  var scaffold = new Target('scaffold', config);
-  for (var key in scaffold) {
-    if (scaffold.hasOwnProperty(key) && key !== 'name') {
-      this[key] = scaffold[key];
-    }
+  this.options = options || {};
+  if (utils.isScaffold(options)) {
+    this.options = {};
+    this.addTargets(options);
+    return this;
   }
 }
 
 /**
- * Set default values on targets.
+ * Add targets to the scaffold, while also normalizing src-dest mappings and
+ * expanding glob patterns in each target.
+ *
+ * ```js
+ * scaffold.addTargets({
+ *   site: {src: '*.hbs', dest: 'templates/'},
+ *   docs: {src: '*.md', dest: 'content/'}
+ * });
+ * ```
+ * @param {Object} `scaffold` Scaffold object where each key is a target or `options`.
+ * @return {Object}
+ * @api public
  */
 
-Scaffold.prototype.init = function(config, options) {
-  if (typeof config === 'undefined') {
-    throw new TypeError('expected config to be an object.');
+Scaffold.prototype.addTargets = function(scaffold) {
+  for (var key in scaffold) {
+    if (scaffold.hasOwnProperty(key)) {
+      var val = scaffold[key];
+      if (util.isTarget(val)) {
+        this.addTarget(key, val);
+      } else {
+        this[key] = val;
+      }
+    }
   }
-  if (typeof config === 'string' || Array.isArray(config)) {
-    config = { src: config };
-  }
-  if (typeof options === 'object') {
-    config.options = merge({}, options, config.options);
-  }
-  if (!hasAny(config, ['src', 'dest', 'files'])) {
-    throw new Error('scaffolds should have a src, dest or files property.');
-  }
-  return config;
 };
 
 /**
- * Return `true` if an object has any of the given keys.
+ * Add a single target to the scaffold, while also normalizing src-dest mappings and
+ * expanding glob patterns in the target.
  *
- * @param {Object} `obj`
- * @param {Array} `keys`
- * @return {Boolean}
+ * ```js
+ * scaffold.addTarget('foo', {
+ *   src: '*.hbs',
+ *   dest: 'templates/'
+ * });
+ * ```
+ * @param {String} `name`
+ * @param {Object} `config`
+ * @return {Object}
+ * @api public
  */
 
-function hasAny(obj, keys) {
-  for (var key in obj) {
-    if (keys.indexOf(key) > -1) return true;
+Scaffold.prototype.addTarget = function(name, config) {
+  if (typeof name !== 'string') {
+    throw new TypeError('addTarget expects name to be a string');
   }
-  return false;
-}
+
+  var target = new utils.Target(this.options);
+  utils.define(target, '_name', name);
+
+  util.run(this, 'target', target);
+  target.addFiles(config);
+
+  if (!(name in this)) {
+    this[name] = target;
+  }
+  return target;
+};
 
 /**
  * Expose `Scaffold`
