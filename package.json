@@ -1,7 +1,7 @@
 {
   "name": "scaffold",
   "description": "Conventions and API for creating scaffolds that can by used by any build system or generator.",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "homepage": "https://github.com/jonschlinkert/scaffold",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/scaffold",
@@ -29,10 +29,9 @@
   },
   "devDependencies": {
     "gulp": "^3.9.0",
+    "gulp-eslint": "^1.1.1",
     "gulp-istanbul": "^0.10.0",
-    "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3",
-    "jshint-stylish": "^2.0.1",
     "mocha": "*",
     "repeat-string": "^1.5.2",
     "should": "*",
