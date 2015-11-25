@@ -7,73 +7,85 @@ var Scaffold = require('./');
  * UI component
  */
 
-var npm = new Scaffold('component', {
-  cwd: '@/scaffolds-example/scaffolds',
-  files: [
-    {src: 'templates/*.hbs', dest: 'src/'},
-    {src: 'scripts/*.js', dest: 'src/'},
-    {src: 'styles/*.css', dest: 'src/'},
-  ]
+var npm = new Scaffold({
+  component: {
+    cwd: '@/scaffolds-example/scaffolds',
+    files: [
+      {src: 'templates/*.hbs', dest: 'src/'},
+      {src: 'scripts/*.js', dest: 'src/'},
+      {src: 'styles/*.css', dest: 'src/'},
+    ]
+  }
 });
 console.log(stringify(npm));
 
 
 /**
- * Blog post
+ * Blog posts
  */
 
-var post = new Scaffold('post', {
-  cwd: 'test/scaffolds',
-  files: [
-    {src: 'content/post.md', dest: 'src/posts/'},
-    {src: 'scripts/ipsum.json', dest: 'src/data/'}
-  ]
+var blog = new Scaffold({
+  post: {
+    cwd: 'test/scaffolds',
+    files: [
+      {src: 'content/post.md', dest: 'src/posts/'},
+      {src: 'scripts/ipsum.json', dest: 'src/data/'}
+    ]
+  }
 });
-console.log(stringify(post));
+console.log(stringify(blog));
 
 
 /**
  * Dotfiles
  */
 
-var dotfiles = new Scaffold('dotfiles', '.*', {
-  filter: function (fp) {
-    return !/DS_Store/.test(fp);
+var dotfiles = new Scaffold({
+  root: {
+    src: '.*',
+    filter: function (fp) {
+      return !/DS_Store/.test(fp);
+    }
   }
 });
+
 console.log(stringify(dotfiles));
 
 
-var foo = new Scaffold('foo', {
-  // `~` tilde expands to the user's home directory
-  options: {cwd: '~/scaffolds'},
-  src: ['**/component*'],
-  dest: 'local/src/'
+// `~` tilde expands to the user's home directory
+var home = new Scaffold({
+  foo: {
+    options: {cwd: '~/scaffolds'},
+    src: ['**/component*'],
+    dest: 'local/src/'
+  },
+  bar: {
+    options: {cwd: '~', srcBase: 'scaffolds'},
+    src: ['*/component.*'],
+    dest: 'local/src/'
+  }
 });
-console.log(stringify(foo))
+console.log(stringify(home))
 
 
-var bar = new Scaffold('foo', {
-  // `~` tilde expands to the user's home directory
-  options: {cwd: '~', srcBase: 'scaffolds'},
-  src: ['*/component.*'],
-  dest: 'local/src/'
-});
-console.log(stringify(bar));
 
+function component(name) {
+  var scaffold = {};
+  scaffold[name] = {
+    files: {
+      src: ['*.js'],
+      dest: 'src'
+    },
+    rename: function (dest, src, opts) {
+      return path.join(dest, name, 'index') + path.extname(src);
+    }
+  };
+  return new Scaffold(scaffold);
+}
 
-// function component(name) {
-//   return new Scaffold(name, {
-//     files: {src: ['*.js'], dest: 'src'},
-//     rename: function(dest, src, opts) {
-//       return path.join(dest, name, 'index') + path.extname(src);
-//     }
-//   });
-// }
-
-// component('foo')
-// //=> 'src/foo/index.js'
-// component('bar')
-// //=> 'src/bar/index.js'
-// component('baz')
-// //=> 'src/baz/index.js'
+console.log(component('foo'));
+//=> 'src/foo/index.js'
+console.log(component('bar'));
+//=> 'src/bar/index.js'
+console.log(component('baz'));
+//=> 'src/baz/index.js'
