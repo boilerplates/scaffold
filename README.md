@@ -2,54 +2,22 @@
 
 > Conventions and API for creating scaffolds that can by used by any build system or generator.
 
-## Quickstart
+**Example**
 
-**Install**
-
-## Install
-
-Install with [npm](https://www.npmjs.com/)
-
-```sh
-$ npm i scaffold --save
-```
-
-**Usage**
-
-Create a reusable scaffold from one or more templates or source files:
+Create a scaffold for blog posts:
 
 ```js
 var Scaffold = require('scaffold');
-var scaffold = new Scaffold({
-  foo: {
-    cwd: '~/scaffolds',
-    src: ['**/component*'],
-    dest: 'local/src/'
+var blog = new Scaffold({
+  posts: {
+    cwd: 'content',
+    src: ['posts/*.md'],
+    dest: 'blog/'
   }  
 });
 ```
 
-Returns a normalized configuration object that can easily be used by any build system or generator. The config object returned from the above example would look something like this:
-
-```js
-{
-  options: {
-    cwd: '~/scaffolds'
-  },
-  files: [{
-    name: 'foo'
-    options: {cwd: '/Users/jonschlinkert/scaffolds'},
-    src: ['/Users/jonschlinkert/scaffolds/scripts/component.js',
-      '/Users/jonschlinkert/scaffolds/styles/component.css',
-      '/Users/jonschlinkert/scaffolds/templates/component.hbs'
-    ],
-    dest: 'local/src/',
-  }]
-}
-```
-
-## Table of contents
-
+- [Install](#install)
 - [Usage](#usage)
 - [Examples](#examples)
 - [API](#api)
@@ -61,6 +29,14 @@ Returns a normalized configuration object that can easily be used by any build s
 - [Contributing](#contributing)
 - [Author](#author)
 - [License](#license)
+
+## Install
+
+Install with [npm](https://www.npmjs.com/)
+
+```sh
+$ npm i scaffold --save
+```
 
 ## Usage
 
