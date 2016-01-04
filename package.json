@@ -68,11 +68,23 @@
   "verb": {
     "related": {
       "list": [
-        "boilerplate",
         "assemble",
-        "template",
-        "scaffold"
+        "boilerplate",
+        "scaffold",
+        "template"
       ]
-    }
+    },
+    "reflinks": [
+      "assemble",
+      "boilerplate",
+      "expand-files",
+      "expand-target",
+      "grunt",
+      "gulp",
+      "scaffold",
+      "template",
+      "verb",
+      "yeoman"
+    ]
   }
 }
