@@ -42,8 +42,27 @@ function Scaffold(options) {
 }
 
 /**
- * Static method that returns true if the given value appears to
- * be a scaffold configuration object or an instance of `Scaffold`.
+ * Static method, returns `true` if the given value is an
+ * instance of `Scaffold` or appears to be a valid `scaffold`
+ * configuration object.
+ *
+ * ```js
+ * Scaffold.isScaffold({});
+ * //=> false
+ *
+ * var blog = new Scaffold({
+ *   post: {
+ *     src: 'content/post.md',
+ *     dest: 'src/posts/'
+ *   }
+ * });
+ * Scaffold.isScaffold(blog);
+ * //=> true
+ * ```
+ * @static
+ * @param {Object} `val` The value to check
+ * @return {Boolean}
+ * @api public
  */
 
 Scaffold.isScaffold = function(val) {

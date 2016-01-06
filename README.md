@@ -173,7 +173,32 @@ scaffold.addTargets({
 });
 ```
 
-### [.addTargets](index.js#L59)
+### [.isScaffold](index.js#L68)
+
+Static method, returns `true` if the given value is an instance of `Scaffold` or appears to be a valid `scaffold` configuration object.
+
+**Params**
+
+* `val` **{Object}**: The value to check
+* `returns` **{Boolean}**
+
+**Example**
+
+```js
+Scaffold.isScaffold({});
+//=> false
+
+var blog = new Scaffold({
+  post: {
+    src: 'content/post.md',
+    dest: 'src/posts/'
+  }
+});
+Scaffold.isScaffold(blog);
+//=> true
+```
+
+### [.addTargets](index.js#L87)
 
 Add targets to the scaffold, while also normalizing src-dest mappings and expanding glob patterns in each target.
 
@@ -191,7 +216,7 @@ scaffold.addTargets({
 });
 ```
 
-### [.addTarget](index.js#L88)
+### [.addTarget](index.js#L127)
 
 Add a single target to the scaffold, while also normalizing src-dest mappings and expanding glob patterns in the target.
 
@@ -205,8 +230,17 @@ Add a single target to the scaffold, while also normalizing src-dest mappings an
 
 ```js
 scaffold.addTarget('foo', {
-  src: '*.hbs',
-  dest: 'templates/'
+  src: 'templates/*.hbs',
+  dest: 'site'
+});
+
+// other configurations are possible
+scaffold.addTarget('foo', {
+  options: {cwd: 'templates'}
+  files: [
+    {src: '*.hbs', dest: 'site'},
+    {src: '*.md', dest: 'site'}
+  ]
 });
 ```
 
