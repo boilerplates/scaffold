@@ -12,6 +12,26 @@ describe('scaffolds', function () {
     scaffold = new Scaffold();
   });
 
+  describe('main export', function () {
+    it('should export a function', function () {
+      assert.equal(typeof Scaffold, 'function');
+    });
+
+    it('should expose isScaffold', function () {
+      assert.equal(typeof Scaffold.isScaffold, 'function');
+    });
+  });
+
+  describe('instance', function () {
+    it('should create an instance of scaffold', function () {
+      assert(scaffold instanceof Scaffold);
+    });
+
+    it('should return true if an instance appears to be a scaffold', function () {
+      assert(Scaffold.isScaffold(scaffold));
+    });
+  });
+
   describe('targets', function () {
     it('should expose an "options" property', function () {
       scaffold.addTargets({});

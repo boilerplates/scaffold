@@ -7,9 +7,9 @@
 
 'use strict';
 
-var utils = require('./utils');
-var util = require('expand-utils');
 var use = require('use');
+var util = require('expand-utils');
+var utils = require('./utils');
 
 /**
  * Create a new Scaffold with the given `options`
@@ -34,12 +34,21 @@ function Scaffold(options) {
   use(this);
 
   this.options = options || {};
-  if (utils.isScaffold(options) || util.isTask(options)) {
+  if (Scaffold.isScaffold(options)) {
     this.options = {};
     this.addTargets(options);
     return this;
   }
 }
+
+/**
+ * Static method that returns true if the given value appears to
+ * be a scaffold configuration object or an instance of `Scaffold`.
+ */
+
+Scaffold.isScaffold = function(val) {
+  return util.isTask(val) || utils.isScaffold(val);
+};
 
 /**
  * Add targets to the scaffold, while also normalizing src-dest mappings and
@@ -57,6 +66,7 @@ function Scaffold(options) {
  */
 
 Scaffold.prototype.addTargets = function(scaffold) {
+  util.run(this, 'scaffold', scaffold);
   for (var key in scaffold) {
     if (scaffold.hasOwnProperty(key)) {
       var val = scaffold[key];
@@ -67,6 +77,7 @@ Scaffold.prototype.addTargets = function(scaffold) {
       }
     }
   }
+  return this;
 };
 
 /**
@@ -75,8 +86,17 @@ Scaffold.prototype.addTargets = function(scaffold) {
  *
  * ```js
  * scaffold.addTarget('foo', {
- *   src: '*.hbs',
- *   dest: 'templates/'
+ *   src: 'templates/*.hbs',
+ *   dest: 'site'
+ * });
+ *
+ * // other configurations are possible
+ * scaffold.addTarget('foo', {
+ *   options: {cwd: 'templates'}
+ *   files: [
+ *     {src: '*.hbs', dest: 'site'},
+ *     {src: '*.md', dest: 'site'}
+ *   ]
  * });
  * ```
  * @param {String} `name`
