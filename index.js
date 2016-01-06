@@ -16,13 +16,21 @@ var use = require('use');
  *
  * ```js
  * var scaffold = new Scaffold({cwd: 'src'});
+ * scaffold.addTargets({
+ *   site: {src: ['*.hbs']},
+ *   blog: {src: ['*.md']}
+ * });
  * ```
  * @param {Object} `options`
  * @api public
  */
 
 function Scaffold(options) {
-  util.is(this, 'Scaffold');
+  if (!(this instanceof Scaffold)) {
+    return new Scaffold(options);
+  }
+
+  util.is(this, 'scaffold');
   use(this);
 
   this.options = options || {};
@@ -43,7 +51,7 @@ function Scaffold(options) {
  *   docs: {src: '*.md', dest: 'content/'}
  * });
  * ```
- * @param {Object} `scaffold` Scaffold object where each key is a target or `options`.
+ * @param {Object} `scaffold` Scaffold object with targets, `options`, or arbitrary properties.
  * @return {Object}
  * @api public
  */
@@ -79,7 +87,7 @@ Scaffold.prototype.addTargets = function(scaffold) {
 
 Scaffold.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
-    throw new TypeError('addTarget expects name to be a string');
+    throw new TypeError('expected name to be a string');
   }
 
   var target = new utils.Target(this.options);
@@ -87,10 +95,9 @@ Scaffold.prototype.addTarget = function(name, config) {
 
   util.run(this, 'target', target);
   target.addFiles(config);
+  target.options = config.options;
 
-  if (!(name in this)) {
-    this[name] = target;
-  }
+  this[name] = target;
   return target;
 };
 
