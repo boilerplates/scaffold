@@ -257,7 +257,7 @@ Lines        : 100% (28/28)
 Install dev dependencies:
 
 ```sh
-$ npm i -d && gulp
+$ npm i -d && npm test
 ```
 
 ## Contributing
