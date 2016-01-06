@@ -95,7 +95,7 @@ Scaffold.prototype.addTarget = function(name, config) {
 
   util.run(this, 'target', target);
   target.addFiles(config);
-  target.options = config.options;
+  target.options = utils.extend({}, config.options, target.options);
 
   this[name] = target;
   return target;

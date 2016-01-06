@@ -14,6 +14,7 @@ require = utils;
 
 require('is-scaffold');
 require('define-property', 'define');
+require('extend-shallow', 'extend');
 require('expand-target', 'Target');
 
 /**

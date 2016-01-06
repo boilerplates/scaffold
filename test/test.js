@@ -18,7 +18,11 @@ describe('scaffolds', function () {
       assert(scaffold.options);
     });
 
-    it('should expose targets', function () {
+    it('should expose an addTargets method', function() {
+      assert.equal(typeof scaffold.addTargets, 'function');
+    });
+
+    it('should add targets to `scaffold`', function() {
       scaffold.addTargets({
         foo: {src: '*'},
         bar: {src: '*'}
@@ -46,6 +50,63 @@ describe('scaffolds', function () {
       });
       assert(scaffold.foo);
       assert(scaffold.bar);
+    });
+
+    it('should expand src patterns in targets', function() {
+      scaffold.addTargets({
+        foo: {src: '*.md'},
+        bar: {src: '*.js'}
+      });
+      assert(Array.isArray(scaffold.foo.files));
+      assert(Array.isArray(scaffold.foo.files[0].src));
+      assert(scaffold.foo.files[0].src.length);
+    });
+
+    it('should use scaffold options on targets', function() {
+      scaffold.addTargets({
+        options: {cwd: 'test/fixtures'},
+        foo: {src: 'a.*'},
+        bar: {src: 'one.*'}
+      });
+      assert(scaffold.foo.files[0].src[0] === 'a.txt');
+      assert(scaffold.bar.files[0].src[0] === 'one.md');
+    });
+
+    it('should retain arbitrary properties on targets', function() {
+      scaffold.addTargets({
+        foo: {src: '*.md', data: {title: 'My Blog'}},
+        bar: {src: '*.js'}
+      });
+      assert(scaffold.foo.files[0].data);
+      assert(scaffold.foo.files[0].data.title);
+      assert(scaffold.foo.files[0].data.title === 'My Blog');
+    });
+
+    it('should use plugins on targets', function() {
+      scaffold.use(function(config) {
+        return function fn(node) {
+          if (config.options.data && !node.data) {
+            node.data = config.options.data;
+          }
+          return fn;
+        }
+      });
+
+      scaffold.addTargets({
+        options: {data: {title: 'My Site'}},
+        foo: {src: '*.md', data: {title: 'My Blog'}},
+        bar: {src: '*.js'}
+      });
+
+      assert(scaffold.foo.files[0].data);
+      assert(scaffold.foo.files[0].data.title);
+      assert(scaffold.foo.files[0].data.title === 'My Blog');
+
+      assert(scaffold.bar.options.data);
+      assert(scaffold.bar.options.data.title === 'My Site');
+      assert(scaffold.bar.files[0].data);
+      assert(scaffold.bar.files[0].data.title);
+      assert(scaffold.bar.files[0].data.title === 'My Site');
     });
   });
 });
