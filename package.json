@@ -1,7 +1,7 @@
 {
   "name": "scaffold",
   "description": "Conventions and API for creating declarative configuration objects for project scaffolds - similar in format to a grunt task, but more portable, generic and can be used by any build system or generator - even gulp.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "homepage": "https://github.com/jonschlinkert/scaffold",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "jonschlinkert/scaffold",
@@ -24,6 +24,7 @@
     "define-property": "^0.2.5",
     "expand-target": "^0.5.3",
     "expand-utils": "^0.1.4",
+    "extend-shallow": "^2.0.1",
     "is-scaffold": "^0.1.1",
     "lazy-cache": "^1.0.3",
     "use": "^1.1.2"
@@ -73,7 +74,6 @@
         "assemble",
         "boilerplate",
         "generate",
-        "scaffold",
         "templates",
         "update",
         "verb"
