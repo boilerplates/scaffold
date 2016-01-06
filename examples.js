@@ -9,15 +9,17 @@ var Scaffold = require('./');
  */
 
 var npm = new Scaffold({
+  options: {a: 'b'},
   component: {
     options: {
+      data: {title: 'Foo'},
       cwd: gm + '/scaffolds-example/scaffolds',
       expand: true,
     },
     files: [
       {src: 'templates/*.hbs', dest: 'src/'},
       {src: 'scripts/*.js', dest: 'src/'},
-      {src: 'styles/*.css', dest: 'src/'},
+      {src: 'styles/*.css', dest: 'src/', options: {data: {title: 'Bar'}}},
     ]
   }
 });
@@ -79,7 +81,6 @@ var home = new Scaffold({
   }
 });
 console.log(stringify(home))
-
 
 
 function component(name) {
