@@ -7,33 +7,33 @@ var assert = require('assert');
 var Scaffold = require('..');
 var scaffold;
 
-describe('scaffolds', function () {
+describe('scaffolds', function() {
   beforeEach(function() {
     scaffold = new Scaffold();
   });
 
-  describe('main export', function () {
-    it('should export a function', function () {
+  describe('main export', function() {
+    it('should export a function', function() {
       assert.equal(typeof Scaffold, 'function');
     });
 
-    it('should expose isScaffold', function () {
+    it('should expose isScaffold', function() {
       assert.equal(typeof Scaffold.isScaffold, 'function');
     });
   });
 
-  describe('instance', function () {
-    it('should create an instance of scaffold', function () {
+  describe('instance', function() {
+    it('should create an instance of scaffold', function() {
       assert(scaffold instanceof Scaffold);
     });
 
-    it('should return true if an instance appears to be a scaffold', function () {
+    it('should return true if an instance appears to be a scaffold', function() {
       assert(Scaffold.isScaffold(scaffold));
     });
   });
 
-  describe('targets', function () {
-    it('should expose an "options" property', function () {
+  describe('targets', function() {
+    it('should expose an "options" property', function() {
       scaffold.addTargets({});
       assert(scaffold.options);
     });
@@ -51,7 +51,7 @@ describe('scaffolds', function () {
       assert(scaffold.bar);
     });
 
-    it('should support passing a configuration to the constructor', function () {
+    it('should support passing a configuration to the constructor', function() {
       var scaffold = new Scaffold({
         foo: {
           cwd: 'test/templates',
@@ -63,7 +63,7 @@ describe('scaffolds', function () {
       assert(scaffold.foo.files[0].src.length > 1);
     });
 
-    it('should expand files arrays', function () {
+    it('should expand files arrays', function() {
       scaffold.addTargets({
         foo: {src: '*'},
         bar: {src: '*'}

@@ -3,7 +3,6 @@ var gm = require('global-modules');
 var stringify = require('./test/support/');
 var Scaffold = require('./');
 
-
 /**
  * UI component
  */
@@ -24,7 +23,6 @@ var npm = new Scaffold({
   }
 });
 console.log(stringify(npm));
-
 
 /**
  * Site components
@@ -50,7 +48,6 @@ var site = new Scaffold({
 });
 console.log(stringify(site));
 
-
 /**
  * Dotfiles
  */
@@ -58,14 +55,13 @@ console.log(stringify(site));
 var dotfiles = new Scaffold({
   root: {
     src: '.*',
-    filter: function (fp) {
+    filter: function(fp) {
       return !/DS_Store/.test(fp);
     }
   }
 });
 
 console.log(stringify(dotfiles));
-
 
 // `~` tilde expands to the user's home directory
 var home = new Scaffold({
@@ -82,7 +78,6 @@ var home = new Scaffold({
 });
 console.log(stringify(home))
 
-
 function component(name) {
   var scaffold = {};
   scaffold[name] = {
@@ -90,7 +85,7 @@ function component(name) {
       src: ['*.js'],
       dest: 'src'
     },
-    rename: function (dest, src, opts) {
+    rename: function(dest, src, opts) {
       return path.join(dest, name, 'index') + path.extname(src);
     }
   };
