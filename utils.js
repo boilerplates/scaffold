@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * Module dependencies
- */
-
 var utils = require('lazy-cache')(require);
 var fn = require;
 require = utils;
@@ -12,15 +8,12 @@ require = utils;
  * Lazily required module dependencies
  */
 
-require('is-scaffold');
+require('base-plugins', 'plugins');
 require('define-property', 'define');
 require('extend-shallow', 'extend');
 require('expand-target', 'Target');
-
-/**
- * Restore `require`
- */
-
+require('isobject', 'isObject');
+require('is-scaffold');
 require = fn;
 
 /**

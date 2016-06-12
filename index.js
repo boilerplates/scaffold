@@ -7,7 +7,7 @@
 
 'use strict';
 
-var use = require('use');
+var Base = require('base');
 var util = require('expand-utils');
 var utils = require('./utils');
 
@@ -30,16 +30,26 @@ function Scaffold(options) {
     return new Scaffold(options);
   }
 
-  util.is(this, 'scaffold');
-  use(this);
+  Base.call(this, {}, options);
+  this.use(utils.plugins());
+  this.is('Scaffold');
 
   this.options = options || {};
+  this.Target = this.options.Target || utils.Target;
+  this.targets = {};
+
   if (Scaffold.isScaffold(options)) {
     this.options = {};
     this.addTargets(options);
     return this;
   }
 }
+
+/**
+ * Inherit `Base`
+ */
+
+Base.extend(Scaffold);
 
 /**
  * Static method, returns `true` if the given value is an
@@ -79,18 +89,23 @@ Scaffold.isScaffold = function(val) {
  *   docs: {src: '*.md', dest: 'content/'}
  * });
  * ```
- * @param {Object} `scaffold` Scaffold object with targets, `options`, or arbitrary properties.
+ * @param {Object} `targets` Object of targets, `options`, or arbitrary properties.
  * @return {Object}
  * @api public
  */
 
-Scaffold.prototype.addTargets = function(scaffold) {
-  util.run(this, 'scaffold', scaffold);
-  for (var key in scaffold) {
-    if (scaffold.hasOwnProperty(key)) {
-      var val = scaffold[key];
+Scaffold.prototype.addTargets = function(targets) {
+  if (!utils.isObject(targets)) {
+    throw new TypeError('expected an object');
+  }
+
+  for (var key in targets) {
+    if (targets.hasOwnProperty(key)) {
+      var val = targets[key];
+
       if (util.isTarget(val)) {
         this.addTarget(key, val);
+
       } else {
         this[key] = val;
       }
@@ -129,14 +144,17 @@ Scaffold.prototype.addTarget = function(name, config) {
     throw new TypeError('expected name to be a string');
   }
 
-  var target = new utils.Target(this.options);
-  utils.define(target, '_name', name);
+  var target = new this.Target(this.options);
+  target.on('files', this.emit.bind(this, 'files'));
+  utils.define(target, 'name', name);
+  utils.define(target, 'key', name);
 
-  util.run(this, 'target', target);
-  target.addFiles(config);
   target.options = utils.extend({}, config.options, target.options);
+  this.emit('target', target);
+  this.run(target);
 
-  this[name] = target;
+  target.addFiles(config);
+  this.targets[name] = target;
   return target;
 };
 

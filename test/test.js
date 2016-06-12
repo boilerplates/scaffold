@@ -2,10 +2,13 @@
 
 require('mocha');
 require('should');
+var path = require('path');
 var util = require('util');
 var assert = require('assert');
 var Scaffold = require('..');
 var scaffold;
+
+var cwd = path.resolve.bind(path, __dirname);
 
 describe('scaffolds', function() {
   beforeEach(function() {
@@ -32,12 +35,27 @@ describe('scaffolds', function() {
     });
   });
 
-  describe('targets', function() {
+  describe('.options', function() {
+    it('should support passing a targets configuration on constructor options', function() {
+      var scaffold = new Scaffold({
+        foo: {
+          cwd: cwd('templates'),
+          files: [{src: '*.txt', dest: 'foo'}]
+        }
+      });
+
+      assert(scaffold.targets.foo);
+      assert(Array.isArray(scaffold.targets.foo.files));
+      assert(scaffold.targets.foo.files[0].src.length > 1);
+    });
+
     it('should expose an "options" property', function() {
       scaffold.addTargets({});
       assert(scaffold.options);
     });
+  });
 
+  describe('.addTargets', function() {
     it('should expose an addTargets method', function() {
       assert.equal(typeof scaffold.addTargets, 'function');
     });
@@ -47,20 +65,8 @@ describe('scaffolds', function() {
         foo: {src: '*'},
         bar: {src: '*'}
       });
-      assert(scaffold.foo);
-      assert(scaffold.bar);
-    });
-
-    it('should support passing a configuration to the constructor', function() {
-      var scaffold = new Scaffold({
-        foo: {
-          cwd: 'test/templates',
-          files: [{src: '*.txt', dest: 'foo'}]
-        }
-      });
-      assert(scaffold.foo);
-      assert(Array.isArray(scaffold.foo.files));
-      assert(scaffold.foo.files[0].src.length > 1);
+      assert(scaffold.targets.foo);
+      assert(scaffold.targets.bar);
     });
 
     it('should expand files arrays', function() {
@@ -68,28 +74,28 @@ describe('scaffolds', function() {
         foo: {src: '*'},
         bar: {src: '*'}
       });
-      assert(scaffold.foo);
-      assert(scaffold.bar);
+      assert(scaffold.targets.foo);
+      assert(scaffold.targets.bar);
     });
 
     it('should expand src patterns in targets', function() {
       scaffold.addTargets({
-        foo: {src: '*.md'},
-        bar: {src: '*.js'}
+        foo: {src: cwd('fixtures/*.md')},
+        bar: {src: cwd('fixtures/*.js')}
       });
-      assert(Array.isArray(scaffold.foo.files));
-      assert(Array.isArray(scaffold.foo.files[0].src));
-      assert(scaffold.foo.files[0].src.length);
+      assert(Array.isArray(scaffold.targets.foo.files));
+      assert(Array.isArray(scaffold.targets.foo.files[0].src));
+      assert(scaffold.targets.foo.files[0].src.length);
     });
 
     it('should use scaffold options on targets', function() {
       scaffold.addTargets({
-        options: {cwd: 'test/fixtures'},
+        options: {cwd: cwd('fixtures')},
         foo: {src: 'a.*'},
         bar: {src: 'one.*'}
       });
-      assert(scaffold.foo.files[0].src[0] === 'a.txt');
-      assert(scaffold.bar.files[0].src[0] === 'one.md');
+      assert.equal(scaffold.targets.foo.files[0].src[0], 'a.txt');
+      assert.equal(scaffold.targets.bar.files[0].src[0], 'one.md');
     });
 
     it('should retain arbitrary properties on targets', function() {
@@ -97,11 +103,50 @@ describe('scaffolds', function() {
         foo: {src: '*.md', data: {title: 'My Blog'}},
         bar: {src: '*.js'}
       });
-      assert(scaffold.foo.files[0].data);
-      assert(scaffold.foo.files[0].data.title);
-      assert(scaffold.foo.files[0].data.title === 'My Blog');
+      assert(scaffold.targets.foo.files[0].data);
+      assert(scaffold.targets.foo.files[0].data.title);
+      assert.equal(scaffold.targets.foo.files[0].data.title, 'My Blog');
+    });
+  });
+
+  describe('events', function() {
+    it('should emit `target`', function() {
+      var count = 0;
+
+      scaffold.on('target', function(target) {
+        assert(target.isTarget);
+        count++;
+      });
+
+      scaffold.addTargets({
+        foo: {src: '*'},
+        bar: {src: '*'}
+      });
+
+      assert.equal(count, 2);
     });
 
+    it('should emit `files`', function() {
+      var count = 0;
+
+      scaffold.on('files', function(name, files) {
+        count++;
+      });
+
+      scaffold.addTargets({
+        foo: {
+          files: [{src: ['*']}]
+        },
+        bar: {
+          files: [{src: ['*']}]
+        }
+      });
+
+      assert.equal(count, 6);
+    });
+  });
+
+  describe('.use', function() {
     it('should use plugins on targets', function() {
       scaffold.use(function(config) {
         return function fn(node) {
@@ -118,15 +163,15 @@ describe('scaffolds', function() {
         bar: {src: '*.js'}
       });
 
-      assert(scaffold.foo.files[0].data);
-      assert(scaffold.foo.files[0].data.title);
-      assert(scaffold.foo.files[0].data.title === 'My Blog');
+      assert(scaffold.targets.foo.files[0].data);
+      assert(scaffold.targets.foo.files[0].data.title);
+      assert.equal(scaffold.targets.foo.files[0].data.title, 'My Blog');
 
-      assert(scaffold.bar.options.data);
-      assert(scaffold.bar.options.data.title === 'My Site');
-      assert(scaffold.bar.files[0].data);
-      assert(scaffold.bar.files[0].data.title);
-      assert(scaffold.bar.files[0].data.title === 'My Site');
+      assert(scaffold.targets.bar.options.data);
+      assert.equal(scaffold.targets.bar.options.data.title, 'My Site');
+      assert(scaffold.targets.bar.files[0].data);
+      assert(scaffold.targets.bar.files[0].data.title);
+      assert.equal(scaffold.targets.bar.files[0].data.title, 'My Site');
     });
   });
 });
