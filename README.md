@@ -1,36 +1,18 @@
-# scaffold [![NPM version](https://img.shields.io/npm/v/scaffold.svg?style=flat)](https://www.npmjs.com/package/scaffold) [![Build Status](https://img.shields.io/travis/jonschlinkert/scaffold.svg?style=flat)](https://travis-ci.org/jonschlinkert/scaffold)
+# scaffold [![NPM version](https://img.shields.io/npm/v/scaffold.svg?style=flat)](https://www.npmjs.com/package/scaffold) [![NPM downloads](https://img.shields.io/npm/dm/scaffold.svg?style=flat)](https://npmjs.org/package/scaffold) [![Build Status](https://img.shields.io/travis/jonschlinkert/scaffold.svg?style=flat)](https://travis-ci.org/jonschlinkert/scaffold)
 
-> Conventions and API for creating declarative configuration objects for project scaffolds - similar in format to a grunt task, but more portable, generic and can be used by any build system or generator - even gulp.
+Conventions and API for creating declarative configuration objects for project scaffolds - similar in format to a grunt task, but more portable, generic and can be used by any build system or generator - even gulp.
 
-[What is a scaffold?](#what-is-a-scaffold) | [gulp-scaffold-example](https://github.com/jonschlinkert/gulp-scaffold-example)
+## Install
 
-- [The goal](#the-goal)
-- [Install](#install)
-- [Usage](#usage)
-- [Examples](#examples)
-- [API](#api)
-- [What is a scaffold?](#what-is-a-scaffold-)
-  * [Comparison table](#comparison-table)
-- [Related projects](#related-projects)
-- [Tests](#tests)
-  * [Test coverage](#test-coverage)
-  * [Running tests](#running-tests)
-- [Contributing](#contributing)
-- [Author](#author)
-- [License](#license)
+Install with [npm](https://www.npmjs.com/):
 
-## The goal
+```sh
+$ npm install --save scaffold
+```
 
-Mainly the following two things:
+[What is a scaffold?](#comparison-table) | [gulp-scaffold-example](https://github.com/jonschlinkert/gulp-scaffold-example)
 
-1. Make it easy to create and publish project scaffolds with reusable templates, styles, themes, data etc.
-2. To uncouple these "non-moving-parts", which can easily be described using a declarative configuration, from any particular build system or generator.
-
-_(To see the opposite of what this project hopes to achieve, take a look at a generator from [Google's Yeoman](http://yeoman.io). Yeoman is a node.js application that generates projects from "scaffolding", which includes templates, project metadata, and so on. But it does so in a way that completely couples these things with application logic, making it difficult or tedious to make the components reusable by anything but yeoman)_.
-
-**Example**
-
-The following scaffold "expands" into a configuration object that can be passed to [gulp](http://gulpjs.com), [grunt](http://gruntjs.com/), [assemble](https://github.com/assemble/assemble), [metalsmith](https://github.com/segmentio/metalsmith), or even [yeoman](http://yeoman.io) for scaffolding out various parts of a blog or site (like adding a new post, UI component, etc):
+The following scaffold expands into a configuration object that can be passed to [gulp](http://gulpjs.com), [grunt](http://gruntjs.com/), [assemble](https://github.com/assemble/assemble), [metalsmith](https://github.com/segmentio/metalsmith), or even [yeoman](http://yeoman.io) for scaffolding out various parts of a blog or site (like adding a new post, UI component, etc):
 
 ```js
 var Scaffold = require('scaffold');
@@ -100,7 +82,7 @@ Since we're just creating an object (with zero application logic), anything can 
 Install with [npm](https://www.npmjs.com/):
 
 ```sh
-$ npm install scaffold --save
+$ npm install --save scaffold
 ```
 
 ## Usage
@@ -171,7 +153,7 @@ scaffold.addTargets({
 });
 ```
 
-### [.isScaffold](index.js#L68)
+### [.isScaffold](index.js#L78)
 
 Static method, returns `true` if the given value is an instance of `Scaffold` or appears to be a valid `scaffold` configuration object.
 
@@ -196,13 +178,13 @@ Scaffold.isScaffold(blog);
 //=> true
 ```
 
-### [.addTargets](index.js#L87)
+### [.addTargets](index.js#L97)
 
 Add targets to the scaffold, while also normalizing src-dest mappings and expanding glob patterns in each target.
 
 **Params**
 
-* `scaffold` **{Object}**: Scaffold object with targets, `options`, or arbitrary properties.
+* `targets` **{Object}**: Object of targets, `options`, or arbitrary properties.
 * `returns` **{Object}**
 
 **Example**
@@ -214,7 +196,7 @@ scaffold.addTargets({
 });
 ```
 
-### [.addTarget](index.js#L127)
+### [.addTarget](index.js#L142)
 
 Add a single target to the scaffold, while also normalizing src-dest mappings and expanding glob patterns in the target.
 
@@ -242,59 +224,55 @@ scaffold.addTarget('foo', {
 });
 ```
 
-## What is a scaffold?
-
-A scaffold consists of one or more templates or source files and serves as a "temporary support structure" that may be used to initialize a new project, or to provide ad-hoc "components" throughout the duration of a project.
-
-**What does this project do?**
-
-Given the above definition, this project provides an API for creating configuration objects with various details about a scaffold, such as source file paths or glob patterns, destination paths, default settings, and so on.
-
-The resulting object could be described as a "scaffold configuration" or "scaffold manifest".
-
 ### Comparison table
 
-The following table describes the difference between boilerplates, scaffolds and templates.
+Many definitions exist for the terms "boilerplate", "scaffold" and "template". The following definitions describe these concepts as it relates to this project.
 
-| **type** | **description** |
+| **type** | **description** | 
 | --- | --- |
 | [template](https://github.com/jonschlinkert/templates) | Resuable file, code or content which contains "placeholder" values that will eventually be replaced with real values by a rendering (template) engine |
 | [scaffold](#scaffold) | Consists of one or more templates or source files and serves as a "temporary support structure" that may be used to initialize a new project, or to provide ad-hoc "components" throughout the duration of a project. |
 | [boilerplate](https://github.com/boilerplates) | Boilerplates consist of all of the necessary files required to initialize a complete project. |
 
+## History
+
+**v0.3.0**
+
+* **breaking change**: targets are now stored on the `targets` object
+* **feature**: now emits `files` when a files object is expanded.
+
 ## Related projects
 
-* [assemble](https://www.npmjs.com/package/assemble): Assemble is a powerful, extendable and easy to use static site generator for node.js. Used… [more](https://www.npmjs.com/package/assemble) | [homepage](https://github.com/assemble/assemble)
-* [boilerplate](https://www.npmjs.com/package/boilerplate): Tools and conventions for authoring and publishing boilerplates that can be generated by any build… [more](https://www.npmjs.com/package/boilerplate) | [homepage](http://boilerplates.io)
-* [generate](https://www.npmjs.com/package/generate): Fast, composable, highly extendable project generator with a user-friendly and expressive API. | [homepage](https://github.com/generate/generate)
-* [templates](https://www.npmjs.com/package/templates): System for creating and managing template collections, and rendering templates with any node.js template engine.… [more](https://www.npmjs.com/package/templates) | [homepage](https://github.com/jonschlinkert/templates)
-* [update](https://www.npmjs.com/package/update): Easily keep anything in your project up-to-date by installing the updaters you want to use… [more](https://www.npmjs.com/package/update) | [homepage](https://github.com/update/update)
-* [verb](https://www.npmjs.com/package/verb): Documentation generator for GitHub projects. Verb is extremely powerful, easy to use, and is used… [more](https://www.npmjs.com/package/verb) | [homepage](https://github.com/verbose/verb)
+You might also be interested in these projects:
 
-## Tests
+* [assemble](https://www.npmjs.com/package/assemble): Assemble is a powerful, extendable and easy to use static site generator for node.js. Used… [more](https://github.com/assemble/assemble) | [homepage](https://github.com/assemble/assemble "Assemble is a powerful, extendable and easy to use static site generator for node.js. Used by thousands of projects for much more than building websites, Assemble is also used for creating themes, scaffolds, boilerplates, e-books, UI components, API docum")
+* [boilerplate](https://www.npmjs.com/package/boilerplate): Tools and conventions for authoring and publishing boilerplates that can be generated by any build… [more](http://boilerplates.io) | [homepage](http://boilerplates.io "Tools and conventions for authoring and publishing boilerplates that can be generated by any build system or generator.")
+* [generate](https://www.npmjs.com/package/generate): Fast, composable, highly pluggable project generator with a user-friendly and expressive API. | [homepage](https://github.com/generate/generate "Fast, composable, highly pluggable project generator with a user-friendly and expressive API.")
+* [templates](https://www.npmjs.com/package/templates): System for creating and managing template collections, and rendering templates with any node.js template engine… [more](https://github.com/jonschlinkert/templates) | [homepage](https://github.com/jonschlinkert/templates "System for creating and managing template collections, and rendering templates with any node.js template engine. Can be used as the basis for creating a static site generator or blog framework.")
+* [update](https://www.npmjs.com/package/update): Easily keep anything in your project up-to-date by installing the updaters you want to use… [more](https://github.com/update/update) | [homepage](https://github.com/update/update "Easily keep anything in your project up-to-date by installing the updaters you want to use and running `update` in the command line! Update the copyright date, licence type, ensure that a project uses your latest eslint or jshint configuration, remove dep")
+* [verb](https://www.npmjs.com/package/verb): Documentation generator for GitHub projects. Verb is extremely powerful, easy to use, and is used… [more](https://github.com/verbose/verb) | [homepage](https://github.com/verbose/verb "Documentation generator for GitHub projects. Verb is extremely powerful, easy to use, and is used on hundreds of projects of all sizes to generate everything from API docs to readmes.")
 
-### Test coverage
+## Contributing
 
-As of May 11, 2016:
+This document was generated by [verb-readme-generator](https://github.com/verbose/verb-readme-generator) (a [verb](https://github.com/verbose/verb) generator), please don't edit directly. Any changes to the readme must be made in [.verb.md](.verb.md). See [Building Docs](#building-docs).
 
+Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](../../issues/new). Or visit the [verb-readme-generator](https://github.com/verbose/verb-readme-generator) project to submit bug reports or pull requests for the readme layout template.
+
+## Building docs
+
+Generate readme and API documentation with [verb](https://github.com/verbose/verb):
+
+```sh
+$ npm install -g verb verb-readme-generator && verb
 ```
-Statements   : 100% (29/29)
-Branches     : 100% (18/18)
-Functions    : 100% (3/3)
-Lines        : 100% (28/28)
-```
 
-### Running tests
+## Running tests
 
 Install dev dependencies:
 
 ```sh
 $ npm install -d && npm test
 ```
-
-## Contributing
-
-Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/scaffold/issues/new).
 
 ## Author
 
@@ -310,4 +288,4 @@ Released under the [MIT license](https://github.com/jonschlinkert/scaffold/blob/
 
 ***
 
-_This file was generated by [verb](https://github.com/verbose/verb), v0.9.0, on May 11, 2016._
+_This file was generated by [verb](https://github.com/verbose/verb), v0.9.0, on June 12, 2016._
