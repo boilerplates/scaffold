@@ -32,19 +32,19 @@ function Scaffold(options) {
 
   Base.call(this);
   this.use(utils.plugins());
-  this.is('Scaffold');
+  this.is('scaffold');
 
-  Scaffold.emit('scaffold', this);
-  this.on('target', Scaffold.emit.bind(Scaffold, 'target'));
-  this.on('files', Scaffold.emit.bind(Scaffold, 'files'));
-
-  this.options = options || {};
+  options = options || {};
+  this.options = options;
   this.targets = {};
 
   if (Scaffold.isScaffold(options)) {
     this.options = {};
+    foward(this, options);
     this.addTargets(options);
     return this;
+  } else {
+    foward(this, options);
   }
 }
 
@@ -147,12 +147,17 @@ Scaffold.prototype.addTarget = function(name, config) {
     throw new TypeError('expected name to be a string');
   }
 
+  var self = this;
   var Target = this.get('Target');
   var target = new Target(this.options);
-
-  target.on('files', this.emit.bind(this, 'files'));
+  utils.define(target, 'parent', this);
   utils.define(target, 'name', name);
   utils.define(target, 'key', name);
+
+  target.on('files', function(stage, files) {
+    utils.define(files, 'parent', target);
+    self.emit('files', stage, files);
+  });
 
   target.options = utils.extend({}, target.options, config.options);
   this.emit('target', target);
@@ -164,7 +169,15 @@ Scaffold.prototype.addTarget = function(name, config) {
 };
 
 /**
- * Get or set the `Target` constructor to use for creating new targets.
+ * Getter/setter for the `Target` constructor to use for creating new targets.
+ *
+ * ```js
+ * var Target = scaffold.get('Target');
+ * var target = new Target();
+ * ```
+ * @name .Target
+ * @return {Function} Returns the `Target` constructor to use for creating new targets.
+ * @api public
  */
 
 Object.defineProperty(Scaffold.prototype, 'Target', {
@@ -176,6 +189,64 @@ Object.defineProperty(Scaffold.prototype, 'Target', {
     return this._Target || this.options.Target || utils.Target;
   }
 });
+
+/**
+ * Getter/setter for `scaffold.name`. The `name` property can be set on the options or
+ * directly on the instance.
+ *
+ * ```js
+ * var scaffold = new Scaffold({name: 'foo'});
+ * console.log(scaffold.name);
+ * //=> 'foo'
+ *
+ * // or
+ * var scaffold = new Scaffold();
+ * scaffold.options.name = 'bar';
+ * console.log(scaffold.name);
+ * //=> 'bar'
+ *
+ * // or
+ * var scaffold = new Scaffold();
+ * scaffold.name = 'baz';
+ * console.log(scaffold.name);
+ * //=> 'baz'
+ * ```
+ * @name .name
+ * @return {Function} Returns the `Target` constructor to use for creating new targets.
+ * @api public
+ */
+
+Object.defineProperty(Scaffold.prototype, 'name', {
+  configurable: true,
+  set: function(val) {
+    utils.define(this, '_scaffoldName', val);
+  },
+  get: function() {
+    return this._scaffoldName || this.options.name;
+  }
+});
+
+/**
+ * Forward events from the scaffold instance to the `Scaffold` constructor
+ */
+
+function foward(app, options) {
+  if (typeof options.name === 'string') {
+    app.name = options.name;
+    delete options.name;
+  }
+  Scaffold.emit('scaffold', app);
+  emit('target', app, Scaffold);
+  emit('files', app, Scaffold);
+}
+
+/**
+ * Forward events from emitter `a` to emitter `b`
+ */
+
+function emit(name, a, b) {
+  a.on(name, b.emit.bind(b, name));
+}
 
 /**
  * Expose `Scaffold`
