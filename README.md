@@ -224,6 +224,45 @@ scaffold.addTarget('foo', {
 });
 ```
 
+### [.Target](index.js#L183)
+
+Getter/setter for the `Target` constructor to use for creating new targets.
+
+* `returns` **{Function}**: Returns the `Target` constructor to use for creating new targets.
+
+**Example**
+
+```js
+var Target = scaffold.get('Target');
+var target = new Target();
+```
+
+### [.name](index.js#L219)
+
+Getter/setter for `scaffold.name`. The `name` property can be set on the options or directly on the instance.
+
+* `returns` **{Function}**: Returns the `Target` constructor to use for creating new targets.
+
+**Example**
+
+```js
+var scaffold = new Scaffold({name: 'foo'});
+console.log(scaffold.name);
+//=> 'foo'
+
+// or
+var scaffold = new Scaffold();
+scaffold.options.name = 'bar';
+console.log(scaffold.name);
+//=> 'bar'
+
+// or
+var scaffold = new Scaffold();
+scaffold.name = 'baz';
+console.log(scaffold.name);
+//=> 'baz'
+```
+
 ### Comparison table
 
 Many definitions exist for the terms "boilerplate", "scaffold" and "template". The following definitions describe these concepts as it relates to this project.
