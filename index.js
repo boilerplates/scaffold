@@ -34,7 +34,7 @@ function Scaffold(options) {
   this.use(utils.plugins());
   this.is('Scaffold');
 
-  Scaffold.emit('create', this);
+  Scaffold.emit('scaffold', this);
   this.on('target', Scaffold.emit.bind(Scaffold, 'target'));
   this.on('files', Scaffold.emit.bind(Scaffold, 'files'));
 
