@@ -154,7 +154,7 @@ Scaffold.prototype.addTarget = function(name, config) {
   utils.define(target, 'name', name);
   utils.define(target, 'key', name);
 
-  target.options = utils.extend({}, config.options, target.options);
+  target.options = utils.extend({}, target.options, config.options);
   this.emit('target', target);
   this.run(target);
 
