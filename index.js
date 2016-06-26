@@ -30,12 +30,15 @@ function Scaffold(options) {
     return new Scaffold(options);
   }
 
-  Base.call(this, {}, options);
+  Base.call(this);
   this.use(utils.plugins());
   this.is('Scaffold');
 
+  Scaffold.emit('create', this);
+  this.on('target', Scaffold.emit.bind(Scaffold, 'target'));
+  this.on('files', Scaffold.emit.bind(Scaffold, 'files'));
+
   this.options = options || {};
-  this.Target = this.options.Target || utils.Target;
   this.targets = {};
 
   if (Scaffold.isScaffold(options)) {
@@ -144,7 +147,9 @@ Scaffold.prototype.addTarget = function(name, config) {
     throw new TypeError('expected name to be a string');
   }
 
-  var target = new this.Target(this.options);
+  var Target = this.get('Target');
+  var target = new Target(this.options);
+
   target.on('files', this.emit.bind(this, 'files'));
   utils.define(target, 'name', name);
   utils.define(target, 'key', name);
@@ -157,6 +162,20 @@ Scaffold.prototype.addTarget = function(name, config) {
   this.targets[name] = target;
   return target;
 };
+
+/**
+ * Get or set the `Target` constructor to use for creating new targets.
+ */
+
+Object.defineProperty(Scaffold.prototype, 'Target', {
+  configurable: true,
+  set: function(Target) {
+    utils.define(this, '_Target', Target);
+  },
+  get: function() {
+    return this._Target || this.options.Target || utils.Target;
+  }
+});
 
 /**
  * Expose `Scaffold`
