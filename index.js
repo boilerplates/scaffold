@@ -103,7 +103,7 @@ Scaffold.prototype.addTargets = function(config) {
   }
 
   if (util.isTarget(config)) {
-    return scaffold.addTarget(config.name, config);
+    return this.addTarget(config.name, config);
   }
 
   for (var key in config) {
