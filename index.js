@@ -97,14 +97,18 @@ Scaffold.isScaffold = function(val) {
  * @api public
  */
 
-Scaffold.prototype.addTargets = function(targets) {
-  if (!utils.isObject(targets)) {
+Scaffold.prototype.addTargets = function(config) {
+  if (!utils.isObject(config)) {
     throw new TypeError('expected an object');
   }
 
-  for (var key in targets) {
-    if (targets.hasOwnProperty(key)) {
-      var val = targets[key];
+  if (util.isTarget(config)) {
+    return scaffold.addTarget(config.name, config);
+  }
+
+  for (var key in config) {
+    if (config.hasOwnProperty(key)) {
+      var val = config[key];
 
       if (util.isTarget(val)) {
         this.addTarget(key, val);
@@ -145,6 +149,10 @@ Scaffold.prototype.addTargets = function(targets) {
 Scaffold.prototype.addTarget = function(name, config) {
   if (typeof name !== 'string') {
     throw new TypeError('expected name to be a string');
+  }
+
+  if (!utils.isObject(config)) {
+    throw new TypeError('expected an object');
   }
 
   var self = this;
