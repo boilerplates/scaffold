@@ -11,6 +11,8 @@
   "license": "MIT",
   "files": [
     "index.js",
+    "LICENSE",
+    "README.md",
     "utils.js"
   ],
   "main": "index.js",
@@ -94,14 +96,15 @@
       "boilerplate",
       "expand-files",
       "expand-target",
+      "generate",
       "grunt",
       "gulp",
       "metalsmith",
       "scaffold",
       "templates",
       "verb",
-      "yeoman",
-      "verb-readme-generator"
+      "verb-readme-generator",
+      "yeoman"
     ],
     "lint": {
       "reflinks": true
